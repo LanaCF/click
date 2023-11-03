@@ -31,7 +31,7 @@ btnAdd.onclick = function() {
   box.append(item);
 }
 
-btnDel.ong = function(){
+btnDel.onclick = function(){
   if(element){
     element.remove();
   }
@@ -41,6 +41,7 @@ btnCloneB.onclick = function() {
   if(element){
     let clone = element.cloneNode(true);
     element.after(clone);
+    element.classList.remove('active');
     element.innerHTML = element.innerHTML + '-c';
   }
 }
@@ -49,6 +50,7 @@ btnCloneA.onclick = function() {
   if(element){
     let clone = element.cloneNode(true);
     element.before(clone);
+    element.classList.remove('active');
     element.innerHTML = element.innerHTML + '-c';
   }
 }
