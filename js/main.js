@@ -2,12 +2,13 @@ const doc = document;
 const box = doc.querySelector('.box');
 const btnAdd = doc.querySelector('.add');
 const btnDel = doc.querySelector('.del');
-const btnCloneB = doc.querySelector('.before');
-const btnCloneA = doc.querySelector('.after');
+const btnBefore = doc.querySelector('.before');
+const btnAfter = doc.querySelector('.after');
 const btn = doc.querySelectorAll('.btn');
 
-let count = 1;
-let element;
+let count = 0;
+let selectedElementNumber = null;
+// let element;
 
 btn.forEach(function(btnEl) {
   btnEl.style.cursor = 'pointer';
@@ -15,52 +16,80 @@ btn.forEach(function(btnEl) {
 
 btnAdd.onclick = function() {
   const item = doc.createElement('div');
+
+  count ++;
   item.className = 'item';
   item.innerHTML = count;
+  item.dataset.number = count;
 
   item.onclick = function(){
     unActiveAll();
     this.classList.toggle('active');
-
     showCurrentEl(this);
+    selectedElementNumber = this.dataset.number;
 
-    element = this;
+    // element = this;
   };
 
-  count ++;
   box.append(item);
 }
 
-btnDel.onclick = function(){
-  if(element){
-    element.remove();
+// btnDel.onclick = function(){
+//   if(element){
+//     element.remove();
+//   }
+// }
+
+btnDel.onclick = function() {
+  const currenItem = getCurrentElement();
+  if (!currenItem) {
+    return;
   }
+
+  currenItem.remove();
+  selectedElementNumber = null;
 }
 
-btnCloneB.onclick = function() {
-  if(element){
-    let clone = element.cloneNode(true);
-    element.after(clone);
-    element.classList.remove('active');
-    element.innerHTML = element.innerHTML + '-c';
+btnBefore.onclick = function() {
+  const currenItem = getCurrentElement();
+  if (!currenItem) {
+    return;
   }
+  
+  const item = cloneElement(currenItem);
+  currenItem.before(item);
 }
 
-btnCloneA.onclick = function() {
-  if(element){
-    let clone = element.cloneNode(true);
-    element.before(clone);
-    element.classList.remove('active');
-    element.innerHTML = element.innerHTML + '-c';
+btnAfter.onclick = function() {
+  const currenItem = getCurrentElement();
+  if (!currenItem) {
+    return;
   }
+  
+  const item = cloneElement(currenItem);
+  currenItem.after(item);
 }
 
+function cloneElement(currentElement) {
+  const item = currentElement.cloneNode(true);
+  count++;
+  item.classList.remove('active');
+  item.dataset.number = count;
+  item.innerHTML = item.innerHTML + '-c';
 
+  item.onclick = function() {
+    clickHandler(this);
+  }
 
+  return item;
+}
 
-
-
-
+function clickHandler(context) {
+  unActiveAll();
+  context.classList.toggle('active');
+  showCurrentEl(context);
+  selectedElementNumber = context.dataset.number;
+}
 
 function unActiveAll() {
   const items = doc.querySelectorAll('.item');
@@ -74,26 +103,15 @@ function showCurrentEl(currentEl) {
   showEl.innerHTML = currentEl.innerHTML;
 }
 
+function getCurrentElement() {
+  const item = doc.querySelector(`.item[data-number="${selectedElementNumber}"]`);
+  if(!item) {
+    alert('Not selected item !!!');
+    return false;
+  }
+
+  return item;
+}
 
 
 
-
-
-
-
-
-
-
-// btnAdd.onclick = function() {
-//   const item = doc.createElement('div');
-//   item.className = 'item';
-//   item.innerHTML = count;
-
-//   item.onclick = function(){
-//     this.remove();
-//   };
-
-//   count ++;
-
-//   box.append(item);
-// }
